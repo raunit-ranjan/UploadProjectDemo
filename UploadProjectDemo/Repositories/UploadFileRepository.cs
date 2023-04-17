@@ -30,8 +30,8 @@ namespace UploadProjectDemo.Repositories
                 {
                     var config = new CsvConfiguration(CultureInfo.InvariantCulture)
                     {
-                        HeaderValidated = null,
-                        MissingFieldFound = null
+                        NewLine = Environment.NewLine,
+                        HasHeaderRecord= true,
                     };
 
                     using (var reader = new StreamReader(Path))
