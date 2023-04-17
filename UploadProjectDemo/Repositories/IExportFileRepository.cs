@@ -5,6 +5,7 @@ namespace UploadProjectDemo.Repositories
 {
     public interface IExportFileRepository
     {
-        public Task<ResponseDto> ExportProducts();
+        public Task<ResponseDto> ExportProductsToPdf();
+        public Task<ResponseDto> ExportProductsToCsv();
     }
 }

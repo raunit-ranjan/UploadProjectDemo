@@ -1,8 +1,6 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
 using ExcelDataReader;
-using Microsoft.EntityFrameworkCore;
-using System.Data;
 using System.Globalization;
 using UploadProjectDemo.Data;
 using UploadProjectDemo.Models.Domain;
@@ -38,31 +36,22 @@ namespace UploadProjectDemo.Repositories
 
                     using (var reader = new StreamReader(Path))
                     using (var csv = new CsvReader(reader, config))
-                    using (var dr = new CsvDataReader(csv))
                     {
-                        var value = new DataTable();
-                        value.Load(dr);
+                        var records = csv.GetRecords<UploadFileParameter>();
 
-                        for (int i = 0; i < value.Rows.Count; i++)
+                        foreach (var record in records)
                         {
-                            UploadFileParameter readData = new UploadFileParameter();
-                            readData.Code = value.Rows[i][0] != null ? Convert.ToString(value.Rows[i][0]) : "";
-                            readData.Name = value.Rows[i][1] != null ? Convert.ToString(value.Rows[i][1]) : "";
-                            readData.Description = value.Rows[i][2] != null ? Convert.ToString(value.Rows[i][2]) : "";
-
-
                             // check if code already exists in database
-                            if (!_dbContext.Products.Any(x => x.Code == readData.Code))
+                            if (!_dbContext.Products.Any(x => x.Code == record.Code))
                             {
                                 productsData.Add(new Product
                                 {
-                                    Code = readData.Code,
-                                    Name = readData.Name,
-                                    Description = readData.Description,
+                                    Code = record.Code,
+                                    Name = record.Name,
+                                    Description = record.Description,
                                     UploadedOn = Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
                                 });
                             }
-
                         }
 
                         if (productsData.Count > 0)
@@ -86,11 +75,8 @@ namespace UploadProjectDemo.Repositories
                 response.IsSuccess = false;
                 response.Message = ex.Message;
             }
-
             return response;
         }
-
-
 
 
         public async Task<ResponseDto> UploadExcelFile(UploadFileRequest request, string path)

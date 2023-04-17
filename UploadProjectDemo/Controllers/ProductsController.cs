@@ -146,18 +146,35 @@ namespace UploadProjectDemo.Controllers
 
         // Read data from database and write in pdf
         [HttpGet]
-        [Route("Export")]
-        public async Task<IActionResult> Export()
+        [Route("ExportToPdf")]
+        public async Task<IActionResult> ExportToPdf()
         {
             try
             {
-                return Ok(await _exportFileRepository.ExportProducts());
+                return Ok(await _exportFileRepository.ExportProductsToPdf());
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
         }
+
+
+        // Read data from database and write in csv
+        [HttpGet]
+        [Route("ExportToCsv")]
+        public async Task<IActionResult> ExportToCsv()
+        {
+            try
+            {
+                return Ok(await _exportFileRepository.ExportProductsToCsv());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
 
     }
 }
